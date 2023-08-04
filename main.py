@@ -1,6 +1,6 @@
 import pandas as pd
 from flask import Flask
-app = Flask(films)
+app = Flask()
 
 # Cargamos el dataset en un DataFrame
 films = pd.read_csv('Films.csv')
