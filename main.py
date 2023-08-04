@@ -2,7 +2,7 @@ from fastapi import FastAPI
 import pandas as pd
 
 # Cargamos el dataset en un DataFrame
-moviesdataset = pd.read_csv("C:/Users/Fede/Documents/Henry/Labs/Fede/Films.csv")
+Films= pd.read_csv('Films.csv')
 
 # Crear instancia de la aplicación FastAPI
 app = FastAPI()
