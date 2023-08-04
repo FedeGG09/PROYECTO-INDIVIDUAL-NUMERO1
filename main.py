@@ -12,10 +12,6 @@ def peliculas_idioma(Idioma: str):
     count_peliculas = films[films['original_language'] == Idioma].shape[0]
     return f"{count_peliculas} películas fueron estrenadas en idioma {Idioma}"
 
-@app.get('/peliculas_duracion/')
-def peliculas_duracion(Pelicula: str):
-    movie_data = films[films['original_title'] == Pelicula].iloc[0]
-    return f"{Pelicula}. Duración: {movie_data['runtime']}. Año: {movie_data['release_date'][-4:]}"
 
 @app.get('/franquicia/')
 def franquicia(Franquicia: str):
