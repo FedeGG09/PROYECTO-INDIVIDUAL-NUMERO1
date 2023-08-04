@@ -4,7 +4,7 @@ import pandas as pd
 app = FastAPI()
 
 # Cargamos el dataset en un DataFrame
-Films= pd.read_csv('Films.csv')
+films= pd.read_csv('Films.csv')
 
 
 # Funciones para los endpoints solicitados
