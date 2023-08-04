@@ -39,32 +39,22 @@ def get_director(nombre_director: str):
     director_data = films[films['director'] == nombre_director]
     
     if not director_data.empty:
+        total_return = director_data['return'].sum()  # Calculate total return
         for _, row in director_data.iterrows():
             pelicula_info = {
-                "nombre_pelicula": row['nombre_pelicula'],
-                "fecha_lanzamiento": row['fecha_lanzamiento'],
-                "retorno_individual": row['retorno_individual'],
-                "costo": row['costo'],
-                "ganancia": row['ganancia']
+                "nombre_pelicula": row['title'],
+                "fecha_lanzamiento": row['release_date'],
+                "retorno_individual": row['return'],
+                "costo": row['budget'],
+                "ganancia": row['revenue']
             }
             resultado.append(pelicula_info)
-        return resultado
+        return {
+            "director": nombre_director,
+            "exito": total_return,
+            "peliculas": resultado
+        }
     else:
         return {"message": "El director no se encuentra en el dataset"}
 
-@app.get('/peliculas_idioma_info/')
-def peliculas_idioma_info(Idioma: str):
-    idioma_data = films[films['original_language'] == Idioma]
-    if not idioma_data.empty:
-        peliculas_info = []
-        for _, row in idioma_data.iterrows():
-            pelicula_info = {
-                "nombre_pelicula": row['original_title'],
-                "duracion": row['runtime'],
-                "año_lanzamiento": row['release_date'][-4:]
-            }
-            peliculas_info.append(pelicula_info)
-        duracion_promedio = idioma_data['runtime'].mean()
-        return {"peliculas": peliculas_info, "duracion_promedio": duracion_promedio}
-    else:
-        return {"message": "No se encontraron películas en el idioma especificado"}
+
