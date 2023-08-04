@@ -1,5 +1,6 @@
 import pandas as pd
-from FastAPI import FastAPI
+from fastapi import FastAPI
+
 app = FastAPI()
 
 # Cargamos el dataset en un DataFrame
@@ -11,7 +12,6 @@ films = pd.read_csv('Films.csv')
 def peliculas_idioma(Idioma: str):
     count_peliculas = films[films['original_language'] == Idioma].shape[0]
     return f"{count_peliculas} películas fueron estrenadas en idioma {Idioma}"
-
 
 @app.get('/franquicia/')
 def franquicia(Franquicia: str):
