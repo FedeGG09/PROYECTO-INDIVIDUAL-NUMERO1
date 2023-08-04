@@ -1,7 +1,6 @@
-from fastapi import FastAPI
 import pandas as pd
-
-app = FastAPI()
+from flask import Flask
+app = Flask(__name__)
 
 # Cargamos el dataset en un DataFrame
 films = pd.read_csv('Films.csv')
