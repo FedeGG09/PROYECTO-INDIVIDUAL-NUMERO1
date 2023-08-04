@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 import pandas as pd
 
+app = FastAPI()
+
 # Cargamos el dataset en un DataFrame
 Films= pd.read_csv('Films.csv')
 
-# Crear instancia de la aplicación FastAPI
-app = FastAPI()
 
 # Funciones para los endpoints solicitados
 
