@@ -69,29 +69,42 @@ def get_director(nombre_director: str):
         return {"message": "El director no se encuentra en el dataset"}
 
 
-
-
 @app.get('/recomendacion/{titulo}')
 def recomendacion(titulo: str):
-    # Combine features for TF-IDF
-    films['combined_features'] = (
-        films['belongs_to_collection'].astype(str) + ' ' +
-        films['genres'].astype(str) + ' ' +
-        films['release_date'].astype(str)
-    )
-    tfidf_vectorizer = TfidfVectorizer()
-    tfidf_matrix = tfidf_vectorizer.fit_transform(films['combined_features'])
-    cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
-    titulo = titulo.lower().strip()
-    match_scores = films['title'].apply(lambda x: fuzz.partial_ratio(x.lower().strip(), titulo))
-    best_match_index = match_scores.idxmax()
-    sim_scores = list(enumerate(cosine_sim[best_match_index]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    similar_movies_indices = [i[0] for i in sim_scores[1:6]]
-    recommended_movies = films['title'].iloc[similar_movies_indices].to_list()
+       def cosine_similarity(a, b):
+        return 1 - distance.cosine(a, b)
 
-    return {"recommended_movies": recommended_movies}
+    pelicula_data = films[films['title'] == titulo]
 
+    if not pelicula_data.empty:
+        pelicula_row = pelicula_data.iloc[0]
+        pelicula_features = np.array([
+            pelicula_row['genres'],
+            pelicula_row['title'],
+            pelicula_row['belongs_to_collection'],
+            pelicula_row['release_date']
+        ])
+
+
+        sim_scores = [
+            (idx, cosine_similarity(pelicula_features, np.array([
+                row['genres'],
+                row['title'],
+                row['belongs_to_collection'],
+                row['release_date']
+            ])))
+            for idx, row in films.iterrows()
+        ]
+
+        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+
+        top_indices = [i[0] for i in sim_scores[1:6]]
+
+        top_titles = films['title'].iloc[top_indices].tolist()
+
+        return {"recommended_movies": top_titles}
+    else:
+        return {"message": "La película no se encuentra en el dataset"}
 
 
 
