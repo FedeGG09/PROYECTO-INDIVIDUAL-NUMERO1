@@ -69,49 +69,38 @@ def get_director(nombre_director: str):
         return {"message": "El director no se encuentra en el dataset"}
 
 
-@app.get('/recomendacion/{titulo}')
-def recomendacion(titulo: str):
-    # Cargar los datos del archivo CSV llamado "Films"
-    films = pd.read_csv("Films.csv")
+# Crear un vectorizador CountVectorizer para los títulos de las películas
+count_vectorizer = CountVectorizer(stop_words='english')
+count_matrix = count_vectorizer.fit_transform(films['title'])
 
-    # Crear una función para calcular la similitud de coseno
-    def cosine_similarity(a, b):
-        return 1 - distance.cosine(a, b)
+# Calcular la similitud del coseno entre las películas
+cosine_sim = cosine_similarity(count_matrix, count_matrix)
 
-    pelicula_data = films[films['title'] == titulo]
+# Crear un diccionario que mapee los títulos de las películas con sus índices en el DataFrame
+indices = pd.Series(films.index, index=films['title']).drop_duplicates()
 
-    if not pelicula_data.empty:
-        pelicula_row = pelicula_data.iloc[0]
-        pelicula_features = np.array([
-            pelicula_row['genres'],
-            pelicula_row['title'],
-            pelicula_row['belongs_to_collection'],
-            pelicula_row['release_date']
-        ])
+@app.get('/recomendacion/{Titulo}')
+def recomendacion(Titulo: str):
+    # Obtener el índice de la película ingresada
+    idx = indices[Titulo]
 
-        # Calcular la similitud de coseno para todas las películas
-        sim_scores = [
-            (idx, cosine_similarity(pelicula_features, np.array([
-                row['genres'],
-                row['title'],
-                row['belongs_to_collection'],
-                row['release_date']
-            ])))
-            for idx, row in films.iterrows()
-        ]
+    # Calcular la similitud del coseno para todas las películas
+    sim_scores = list(enumerate(cosine_sim[idx]))
 
-        # Ordenar las películas según la similitud en orden descendente
-        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    # Ordenar las películas según la similitud en orden descendente
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
 
-        # Obtener los índices de las 5 películas más similares (excluyendo la película ingresada)
-        top_indices = [i[0] for i in sim_scores[1:6]]
+    # Obtener los índices de las 5 películas más similares (excluyendo la película ingresada)
+    top_indices = [i[0] for i in sim_scores[1:6]]
 
-        # Obtener los títulos de las 5 películas más similares
-        top_titles = films['title'].iloc[top_indices].tolist()
+    # Obtener los títulos de las 5 películas más similares
+    top_titles = films['title'].iloc[top_indices].tolist()
 
-        return {"recommended_movies": top_titles}
-    else:
-        return {"message": "La película no se encuentra en el dataset"}
+    return top_titles
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
 
