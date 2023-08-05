@@ -13,6 +13,17 @@ def peliculas_idioma(Idioma: str):
     count_peliculas = films[films['original_language'] == Idioma].shape[0]
     return f"{count_peliculas} películas fueron estrenadas en idioma {Idioma}"
 
+@app.get('/peliculas_duracion/')
+def peliculas_duracion(Pelicula: str):
+    pelicula_data = films[films['title'] == Pelicula]
+    
+    if not pelicula_data.empty:
+        duracion = pelicula_data.iloc[0]['runtime']
+        ano_lanzamiento = pelicula_data.iloc[0]['release_year']
+        return f"{Pelicula}. Duración: {duracion}. Año: {ano_lanzamiento}"
+    else:
+        return {"message": "La película no se encuentra en el dataset"}
+
 @app.get('/franquicia/')
 def franquicia(Franquicia: str):
     franquicia_data = films[films['belongs_to_collection'] == Franquicia]
