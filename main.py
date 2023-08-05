@@ -19,7 +19,7 @@ def peliculas_duracion(Pelicula: str):
     
     if not pelicula_data.empty:
         duracion = pelicula_data.iloc[0]['runtime']
-        ano_lanzamiento = pelicula_data.iloc[0]['release_year']
+        ano_lanzamiento = pelicula_data.iloc[0]['release_date']
         return f"{Pelicula}. Duración: {duracion}. Año: {ano_lanzamiento}"
     else:
         return {"message": "La película no se encuentra en el dataset"}
