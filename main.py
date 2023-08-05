@@ -69,22 +69,45 @@ def get_director(nombre_director: str):
         return {"message": "El director no se encuentra en el dataset"}
 
 
-@app.get('/recomendacion/')
+
+
+films['combined_features'] = (
+    films['belongs_to_collection'].astype(str) + ' ' +
+    films['genres'].astype(str) + ' ' +
+    films['release_date'].astype(str) + ' ' +
+    films['original_language'].astype(str)
+)
+
+
+tfidf_vectorizer = TfidfVectorizer()
+tfidf_matrix = tfidf_vectorizer.fit_transform(films['combined_features'])
+
+
+cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
+
 def recomendacion(titulo: str):
 
     titulo = titulo.lower().strip()
 
+
     match_scores = films['title'].apply(lambda x: fuzz.partial_ratio(x.lower().strip(), titulo))
     best_match_index = match_scores.idxmax()
+
 
     sim_scores = list(enumerate(cosine_sim[best_match_index]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
 
+ 
     similar_movies_indices = [i[0] for i in sim_scores[1:6]]
+
 
     recommended_movies = films['title'].iloc[similar_movies_indices].to_list()
 
     return {"recommended_movies": recommended_movies}
+
+@app.get('/recomendacion_api/')
+def recomendacion_api(titulo: str):
+    return recomendacion(titulo)
 
 
 
