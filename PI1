@@ -136,7 +136,7 @@ def calculate_return(row):
 Films['return'] = Films.apply(calculate_return, axis=1)
 
 # Lista de columnas a eliminar
-columnas_sin_utilizar = ['video', 'imdb_id', 'adult', 'original_title', 'poster_path', 'homepage', 'id', 'runtime', 'status','vote_average', 'vote_count' 'tagline']
+columnas_sin_utilizar = ['video', 'imdb_id', 'adult', 'original_title', 'poster_path', 'homepage', 'id', 'status','vote_average', 'vote_count' 'tagline']
 
 # Eliminar las columnas que no serán utilizadas
 Films.drop(columns=columnas_sin_utilizar, inplace=True)
