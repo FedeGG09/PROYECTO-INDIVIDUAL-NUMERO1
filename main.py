@@ -71,9 +71,15 @@ def get_director(nombre_director: str):
 
 @app.get('/recomendacion/{titulo}')
 def recomendacion(titulo: str):
-       def cosine_similarity(a, b):
+    # Cargar los datos del archivo CSV llamado "Films"
+    films = pd.read_csv("Films.csv")
+
+    # Crear una función para calcular la similitud de coseno
+    def cosine_similarity(a, b):
         return 1 - distance.cosine(a, b)
+
     pelicula_data = films[films['title'] == titulo]
+
     if not pelicula_data.empty:
         pelicula_row = pelicula_data.iloc[0]
         pelicula_features = np.array([
@@ -82,6 +88,8 @@ def recomendacion(titulo: str):
             pelicula_row['belongs_to_collection'],
             pelicula_row['release_date']
         ])
+
+        # Calcular la similitud de coseno para todas las películas
         sim_scores = [
             (idx, cosine_similarity(pelicula_features, np.array([
                 row['genres'],
@@ -92,9 +100,15 @@ def recomendacion(titulo: str):
             for idx, row in films.iterrows()
         ]
 
+        # Ordenar las películas según la similitud en orden descendente
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+
+        # Obtener los índices de las 5 películas más similares (excluyendo la película ingresada)
         top_indices = [i[0] for i in sim_scores[1:6]]
+
+        # Obtener los títulos de las 5 películas más similares
         top_titles = films['title'].iloc[top_indices].tolist()
+
         return {"recommended_movies": top_titles}
     else:
         return {"message": "La película no se encuentra en el dataset"}
