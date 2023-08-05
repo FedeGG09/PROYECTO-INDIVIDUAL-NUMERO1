@@ -70,27 +70,23 @@ def get_director(nombre_director: str):
 
 
 
-@app.get('/recomendacion_api/')
-def recomendacion(titulo: str):
-    # Combine features for TF-IDF
-    films['combined_features'] = (
-        films['belongs_to_collection'].astype(str) + ' ' +
-        films['genres'].astype(str) + ' ' +
-        films['release_date'].astype(str) + ' ' +
-        films['original_language'].astype(str)
-    )
-    tfidf_vectorizer = TfidfVectorizer()
-    tfidf_matrix = tfidf_vectorizer.fit_transform(films['combined_features'])
-    cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
-    titulo = titulo.lower().strip()
-    match_scores = films['title'].apply(lambda x: fuzz.partial_ratio(x.lower().strip(), titulo))
-    best_match_index = match_scores.idxmax()
-    sim_scores = list(enumerate(cosine_sim[best_match_index]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    similar_movies_indices = [i[0] for i in sim_scores[1:6]]
-    recommended_movies = films['title'].iloc[similar_movies_indices].to_list()
+@app.get('/recomendacion/{titulo}')
+def recomendacion(titulo):
+    try:
+        count_vectorizer = CountVectorizer(stop_words='english')
+        count_matrix = count_vectorizer.fit_transform(movies_cleaned['title'])
+        cosine_sim = cosine_similarity(count_matrix, count_matrix)
+        indices = pd.Series(movies_cleaned.index, index=movies_cleaned['title']).drop_duplicates()
+        idx = indices[titulo]
+        sim_scores = list(enumerate(cosine_sim[idx]))
+        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+        top_indices = [i[0] for i in sim_scores[1:6]]
+        top_titles = movies_cleaned['title'].iloc[top_indices].tolist()
 
-    return {"recommended_movies": recommended_movies}
+        return JSONResponse(content={"recommended_movies": top_titles})
+    except KeyError:
+        return JSONResponse(content={"error": "Movie not found"}, status_code=404)
+
 
 
 
