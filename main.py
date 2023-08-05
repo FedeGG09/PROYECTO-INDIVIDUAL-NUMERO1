@@ -77,7 +77,7 @@ def recomendacion(titulo: str):
     films['combined_features'] = (
         films['belongs_to_collection'].astype(str) + ' ' +
         films['genres'].astype(str) + ' ' +
-        films['release_year'].astype(str)
+        films['release_date'].astype(str)
     )
     tfidf_vectorizer = TfidfVectorizer()
     tfidf_matrix = tfidf_vectorizer.fit_transform(films['combined_features'])
