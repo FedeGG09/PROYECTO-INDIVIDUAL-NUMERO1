@@ -1,14 +1,9 @@
 ﻿async-lru
 async-timeout
-beautifulsoup4
 fastapi
 Flask
-wordcloud
 uvicorn
 scikit-learn
 scipy
-matplotlib
-matplotlib-inline
-fuzzywuzzy
 pandas
 numpy
