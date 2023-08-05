@@ -6,7 +6,6 @@ Flask
 wordcloud
 uvicorn
 scikit-learn
-sklearn
 scipy
 matplotlib
 matplotlib-inline
