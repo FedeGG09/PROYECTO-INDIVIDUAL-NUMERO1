@@ -70,22 +70,15 @@ def get_director(nombre_director: str):
 
 
 
-@app.get('/recomendacion/{titulo}')
+@app.get('/recomendacion/{Titulo}')
 def recomendacion(titulo):
-    try:
-        count_vectorizer = CountVectorizer(stop_words='english')
-        count_matrix = count_vectorizer.fit_transform(movies_cleaned['title'])
-        cosine_sim = cosine_similarity(count_matrix, count_matrix)
-        indices = pd.Series(movies_cleaned.index, index=movies_cleaned['title']).drop_duplicates()
-        idx = indices[titulo]
-        sim_scores = list(enumerate(cosine_sim[idx]))
-        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-        top_indices = [i[0] for i in sim_scores[1:6]]
-        top_titles = movies_cleaned['title'].iloc[top_indices].tolist()
+    idx = indices[titulo]
+    sim_scores = list(enumerate(cosine_sim[idx]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    top_indices = [i[0] for i in sim_scores[1:6]]
+    top_titles = movies_cleaned['title'].iloc[top_indices].tolist()
 
-        return JSONResponse(content={"recommended_movies": top_titles})
-    except KeyError:
-        return JSONResponse(content={"error": "Movie not found"}, status_code=404)
+    return top_titles
 
 
 
