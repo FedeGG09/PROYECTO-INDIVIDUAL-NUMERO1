@@ -69,3 +69,27 @@ def get_director(nombre_director: str):
         return {"message": "El director no se encuentra en el dataset"}
 
 
+@app.get('/recomendacion/')
+def get_recomendacion(titulo: str):
+    # Convert the input title to lowercase and remove whitespace
+    titulo = titulo.lower().strip()
+
+    # Perform fuzzy search to find the most similar title in the DataFrame
+    match_scores = films['nombre_pelicula'].apply(lambda x: fuzz.partial_ratio(x.lower().strip(), titulo))
+    best_match_index = match_scores.idxmax()
+
+    # Calculate the similarity of the movie with the rest of the movies
+    sim_scores = list(enumerate(cosine_sim[best_match_index]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+
+    # Get the indices of the top 5 similar movies (excluding the queried movie)
+    similar_movies_indices = [i[0] for i in sim_scores[1:6]]
+
+    # Get the names of the recommended movies
+    recommended_movies = films['nombre_pelicula'].iloc[similar_movies_indices].to_list()
+
+    return {"recommended_movies": recommended_movies}
+
+
+
+
