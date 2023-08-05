@@ -73,9 +73,7 @@ def get_director(nombre_director: str):
 def recomendacion(titulo: str):
        def cosine_similarity(a, b):
         return 1 - distance.cosine(a, b)
-
     pelicula_data = films[films['title'] == titulo]
-
     if not pelicula_data.empty:
         pelicula_row = pelicula_data.iloc[0]
         pelicula_features = np.array([
@@ -84,8 +82,6 @@ def recomendacion(titulo: str):
             pelicula_row['belongs_to_collection'],
             pelicula_row['release_date']
         ])
-
-
         sim_scores = [
             (idx, cosine_similarity(pelicula_features, np.array([
                 row['genres'],
@@ -97,11 +93,8 @@ def recomendacion(titulo: str):
         ]
 
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-
         top_indices = [i[0] for i in sim_scores[1:6]]
-
         top_titles = films['title'].iloc[top_indices].tolist()
-
         return {"recommended_movies": top_titles}
     else:
         return {"message": "La película no se encuentra en el dataset"}
