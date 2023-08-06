@@ -1,4 +1,8 @@
 import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
+from fuzzywuzzy import fuzz
+from typing import List
 from fastapi import FastAPI
 
 app = FastAPI()
