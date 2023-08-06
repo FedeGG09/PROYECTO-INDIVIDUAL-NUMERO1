@@ -69,49 +69,9 @@ def get_director(nombre_director: str):
         return {"message": "El director no se encuentra en el dataset"}
 
 def create_movie_recommendation_app():
-    # Crear la aplicación FastAPI
-    app = FastAPI()
-
-    # Define el dataframe 'films' aquí o proporciona la URL para cargarlo
-
     # Eliminamos filas con valores faltantes en las columnas relevantes para el análisis
     films.dropna(subset=['belongs_to_collection', 'genres', 'release_date'], inplace=True)
     films['title'] = films['title'].str.lower().str.strip()
-
-    films['combined_features'] = (
-        films['belongs_to_collection'].astype(str) + ' ' +
-        films['genres'].astype(str) + ' ' +
-        films['release_date'].astype(str)
-    )
-
-  def create_movie_recommendation_app():
-    # Crear la aplicación FastAPI
-    app = FastAPI()
-
-    # Define el dataframe 'films' aquí o proporciona la URL para cargarlo
-
-    # Eliminamos filas con valores faltantes en las columnas relevantes para el análisis
-    films.dropna(subset=['belongs_to_collection', 'genres', 'release_date'], inplace=True)
-    films['title'] = films['title'].str.lower().str.strip()
-
-    films['combined_features'] = (
-        films['belongs_to_collection'].astype(str) + ' ' +
-        films['genres'].astype(str) + ' ' +
-        films['release_date'].astype(str)
-    )
-
-    # Crear la matriz de características TF-IDF
-    tfidf_vectorizer = TfidfVectorizer()
-    tfidf_matrix = tfidf_vectorizer.fit_transform(films['combined_features'])
-
-    # Calcular la similitud del coseno utilizando el kernel lineal
-    cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
-
-   def create_movie_recommendation_app():
-    # Eliminamos filas con valores faltantes en las columnas relevantes para el análisis
-    films.dropna(subset=['belongs_to_collection', 'genres', 'release_date'], inplace=True)
-    films['title'] = films['title'].str.lower().str.strip()
-
     films['combined_features'] = (
         films['belongs_to_collection'].astype(str) + ' ' +
         films['genres'].astype(str) + ' ' +
@@ -156,4 +116,3 @@ def create_movie_recommendation_app():
 
 # Crear la aplicación de recomendación de películas
 app = create_movie_recommendation_app()
-        return recommended_movies
