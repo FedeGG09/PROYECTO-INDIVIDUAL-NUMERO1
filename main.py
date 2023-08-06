@@ -68,8 +68,53 @@ def get_director(nombre_director: str):
     else:
         return {"message": "El director no se encuentra en el dataset"}
 
-films = pd.read_csv('Films2.csv')
+films = pd.read_csv(csv_url)
 
-@app.get('/')
-def get_recommendations(titulo: str):
-    return recomendacion(titulo)
+    # Eliminamos filas con valores faltantes en las columnas relevantes para el análisis
+    films.dropna(subset=['belongs_to_collection', 'genres', 'release_date'], inplace=True)
+    films['title'] = films['title'].str.lower().str.strip()
+
+    films['combined_features'] = (
+        films['belongs_to_collection'].astype(str) + ' ' +
+        films['genres'].astype(str) + ' ' +
+        films['release_date'].astype(str)
+    )
+
+    # Crear la matriz de características TF-IDF
+    tfidf_vectorizer = TfidfVectorizer()
+    tfidf_matrix = tfidf_vectorizer.fit_transform(films['combined_features'])
+
+    # Calcular la similitud del coseno utilizando el kernel lineal
+    cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
+
+    def recomendacion(titulo: str) -> List[str]:
+        # Convertir el título ingresado a minúsculas y eliminar espacios en blanco
+        titulo = titulo.lower().strip()
+
+        # Realizar búsqueda difusa para encontrar el título más similar en el DataFrame
+        match_scores = films['title'].apply(lambda x: fuzz.partial_ratio(x.lower().strip(), titulo))
+        best_match_index = match_scores.idxmax()
+
+        # Obtener el índice de la película correspondiente al título más similar
+        index = best_match_index
+
+        # Calcular la similitud de la película con el resto de películas
+        sim_scores = list(enumerate(cosine_sim[index]))
+        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+
+        # Obtener los índices de las 5 películas más similares (excluyendo la película consultada)
+        similar_movies_indices = [i[0] for i in sim_scores[1:6]]
+
+        # Obtener los nombres de las películas recomendadas
+        recommended_movies = films['title'].iloc[similar_movies_indices].tolist()
+
+        return recommended_movies
+
+    @app.get('/recomendacion/')
+    def get_recommendations(titulo: str):
+        return recomendacion(titulo)
+
+    return app
+
+# Crear la aplicación de recomendación de películas
+app = create_movie_recommendation_app()
