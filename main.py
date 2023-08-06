@@ -69,38 +69,49 @@ def get_director(nombre_director: str):
         return {"message": "El director no se encuentra en el dataset"}
 
 
-# Crear un vectorizador CountVectorizer para los títulos de las películas
-count_vectorizer = CountVectorizer(stop_words='english')
-count_matrix = count_vectorizer.fit_transform(films['title'])
+# Eliminamos filas con valores faltantes en las columnas relevantes para el análisis
+Films.dropna(subset=['belongs_to_collection', 'genres', 'release_date'], inplace=True)
+Films['title'] = Films['title'].str.lower().str.strip()
 
-# Calcular la similitud del coseno entre las películas
-cosine_sim = cosine_similarity(count_matrix, count_matrix)
+Films['combined_features'] = (
+    Films['belongs_to_collection'].astype(str) + ' ' +
+    Films['genres'].astype(str) + ' ' +
+    Films['release_date'].astype(str)
+)
 
-# Crear un diccionario que mapee los títulos de las películas con sus índices en el DataFrame
-indices = pd.Series(films.index, index=films['title']).drop_duplicates()
+# Crear la matriz de características TF-IDF
+tfidf_vectorizer = TfidfVectorizer()
+tfidf_matrix = tfidf_vectorizer.fit_transform(Films['combined_features'])
 
-@app.get('/recomendacion/{Titulo}')
-def recomendacion(Titulo: str):
-    # Obtener el índice de la película ingresada
-    idx = indices[Titulo]
+# Calcular la similitud del coseno utilizando el kernel lineal
+cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
 
-    # Calcular la similitud del coseno para todas las películas
-    sim_scores = list(enumerate(cosine_sim[idx]))
+def recomendacion(titulo: str) -> List[str]:
+    # Convertir el título ingresado a minúsculas y eliminar espacios en blanco
+    titulo = titulo.lower().strip()
 
-    # Ordenar las películas según la similitud en orden descendente
+    # Realizar búsqueda difusa para encontrar el título más similar en el DataFrame
+    match_scores = Films['title'].apply(lambda x: fuzz.partial_ratio(x.lower().strip(), titulo))
+    best_match_index = match_scores.idxmax()
+
+    # Obtener el índice de la película correspondiente al título más similar
+    index = best_match_index
+
+    # Calcular la similitud de la película con el resto de películas
+    sim_scores = list(enumerate(cosine_sim[index]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
 
-    # Obtener los índices de las 5 películas más similares (excluyendo la película ingresada)
-    top_indices = [i[0] for i in sim_scores[1:6]]
+    # Obtener los índices de las 5 películas más similares (excluyendo la película consultada)
+    similar_movies_indices = [i[0] for i in sim_scores[1:6]]
 
-    # Obtener los títulos de las 5 películas más similares
-    top_titles = films['title'].iloc[top_indices].tolist()
+    # Obtener los nombres de las películas recomendadas
+    recommended_movies = Films['title'].iloc[similar_movies_indices].tolist()
+    
+    return recommended_movies
 
-    return top_titles
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+@app.get('/')
+def get_recommendations(titulo: str):
+    return recomendacion(titulo)
 
 
 
