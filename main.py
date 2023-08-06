@@ -79,6 +79,8 @@ Films['combined_features'] = (
     Films['release_date'].astype(str)
 )
 
+films = pd.read_csv('Films.csv')
+
 # Crear la matriz de características TF-IDF
 tfidf_vectorizer = TfidfVectorizer()
 tfidf_matrix = tfidf_vectorizer.fit_transform(Films['combined_features'])
