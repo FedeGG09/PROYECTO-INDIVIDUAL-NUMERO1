@@ -1,7 +1,6 @@
 Pandas
 Numpy
 scikit-learn
-sklearn
 scipy
 uvicorn
 fastapi
