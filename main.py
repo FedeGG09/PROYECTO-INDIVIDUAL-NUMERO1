@@ -19,11 +19,16 @@ def peliculas_idioma(Idioma: str):
 
 @app.get('/peliculas_duracion/{Pelicula}')
 def peliculas_duracion(Pelicula: str):
-    # Filter the DataFrame to get the movie with the given title
+    # Elimina espacios en blanco adicionales alrededor del título de la película
+    Pelicula = Pelicula.strip()
+    
+    # Imprime el título de la película para verificar cómo se está pasando
+    print("Título de la película:", Pelicula)
+    
+    # Filtra el DataFrame para obtener la película con el título dado
     pelicula_data = films[films['title'] == Pelicula]
     
     if not pelicula_data.empty:
-     
         duracion = pelicula_data.iloc[0]['runtime']
         year = pelicula_data.iloc[0]['release_date'][:4]
         return f"{Pelicula}. Duración: {duracion}. Año: {year}"
