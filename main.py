@@ -22,6 +22,9 @@ def peliculas_duracion(pelicula: str):
     # Filtrar el DataFrame para obtener la fila correspondiente a la película
     pelicula_filtrada = films[films['title'] == pelicula]
 
+    # Imprimir el título de la película para verificar cómo se está pasando
+    print("Título de la película en URL:", pelicula)
+    
     # Verificar si la película existe en el DataFrame
     if pelicula_filtrada.empty:
         return "La película no fue encontrada en el dataset."
