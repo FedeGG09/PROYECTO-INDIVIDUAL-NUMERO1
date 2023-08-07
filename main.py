@@ -22,12 +22,6 @@ def peliculas_duracion(Pelicula: str):
     # Elimina espacios en blanco adicionales alrededor del título de la película
     Pelicula = Pelicula.strip()
     
-    # Imprime el título de la película para verificar cómo se está pasando
-    print("Título de la película:", Pelicula)
-    
-    # Imprime todos los títulos presentes en la columna "title" del DataFrame
-    print("Títulos en el DataFrame:", films['title'].tolist())
-    
     # Filtra el DataFrame para obtener la película con el título dado
     pelicula_data = films[films['title'] == Pelicula]
     
