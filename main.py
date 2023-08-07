@@ -22,8 +22,14 @@ def peliculas_duracion(Pelicula: str):
     # Elimina espacios en blanco adicionales alrededor del título de la película
     Pelicula = Pelicula.strip()
     
-    # Filtra el DataFrame para obtener la película con el título dado
+    # Imprime el título de la película para verificar cómo se está pasando
+    print("Título de la película en URL:", Pelicula)
+    
+    # Filtra el DataFrame "films" para obtener la película con el título dado
     pelicula_data = films[films['title'] == Pelicula]
+    
+    # Imprime la cantidad de filas encontradas
+    print("Cantidad de filas encontradas:", len(pelicula_data))
     
     if not pelicula_data.empty:
         duracion = pelicula_data.iloc[0]['runtime']
