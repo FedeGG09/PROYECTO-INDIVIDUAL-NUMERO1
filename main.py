@@ -19,14 +19,16 @@ def peliculas_idioma(Idioma: str):
 
 @app.get('/peliculas_duracion/{Pelicula}')
 def peliculas_duracion(Pelicula: str):
+    # Filter the DataFrame to get the movie with the given title
     pelicula_data = films[films['title'] == Pelicula]
     
     if not pelicula_data.empty:
+     
         duracion = pelicula_data.iloc[0]['runtime']
-        ano_lanzamiento = pelicula_data.iloc[0]['release_date']
-        return f"{Pelicula}. Duración: {duracion}. Año: {ano_lanzamiento}"
+        year = pelicula_data.iloc[0]['release_date'][:4]
+        return f"{Pelicula}. Duración: {duracion}. Año: {year}"
     else:
-        return {"message": "La película no se encuentra en el dataset"}
+        return {"message": "La película no se encuentra en el dataset."}
 
 @app.get('/franquicia/')
 def franquicia(Franquicia: str):
