@@ -1,5 +1,7 @@
 PROYECTO INDIVIDUAL Nº1: Machine Learning Operations (MLOps)
 
+
+
 ![image](https://github.com/FedeGG09/PROYECTO-INDIVIDUAL-NUMERO1/assets/124220922/922814e2-eecf-474f-9015-79312b21a978)
 
 
