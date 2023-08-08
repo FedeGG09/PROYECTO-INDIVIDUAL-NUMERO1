@@ -85,6 +85,7 @@ print(Films.describe())
 
 Realicé graficos de estas relaciones y obtuve indicios de que me interesaba concatenar luego para el proceso final que fue crear el sistema de recomendación de peliculas.
 
+![image](https://github.com/FedeGG09/PROYECTO-INDIVIDUAL-NUMERO1/assets/124220922/12bfe42e-e3d0-439c-afba-d8caf9f682ce)
 
 
 
