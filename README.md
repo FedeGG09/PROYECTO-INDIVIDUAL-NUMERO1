@@ -36,10 +36,10 @@ Una vez terminado el paso anterior, el proceso continuó llenando los datos inva
 
 Ejemplos de estos códigos son:
 
-# Rellenar los valores nulos en la columna "budget" con 0
+
 Films['budget'].fillna(0, inplace=True)
 
-# Eliminar los valores nulos del campo 'release_date'
+
 Films.dropna(subset=['release_date'], inplace=True)
 
 El siguiente paso fue cambiar las fechas de estreno para hacerlas coincidir con el formato pedido en la consigna: AAAA:MM:DD
