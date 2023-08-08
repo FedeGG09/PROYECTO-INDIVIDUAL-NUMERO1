@@ -71,6 +71,22 @@ fecha_fin = pd.to_datetime('2022-12-01')
 Films = Films[(Films['release_date'] >= fecha_inicio) & (Films['release_date'] <= fecha_fin)]
 
 
+EDA
+
+
+El siguiente paso para el proyecto consistió en realizar el EDA (Análisis exploratorio de datos).
+Durante este proceso, realicé estadísticas descriptivas de los campos, distribución de las variables numéricas, matriz de relaciones sobre el DataFrame “Films” que fue el que resultó de todo el proceso anterior. 
+Ejemplos de código: 
+
+correlation_matrix = Films.corr()
+
+print(Films.describe())
+
+
+Realicé graficos de estas relaciones y obtuve indicios de que me interesaba concatenar luego para el proceso final que fue crear el sistema de recomendación de peliculas.
+
+
+
 
 
 
