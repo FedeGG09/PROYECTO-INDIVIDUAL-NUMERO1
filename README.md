@@ -14,7 +14,7 @@ Este es el primer proyecto individual de la etapa de Labs en el Bootcamp de Henr
 
 Se nos proporciono dos datasets en formato csv (coma separated values) con información de películas que constaba de diferentes campos, como el año de estreno, actores, directores, presupuesto, entre otros.
 
-ETL
+                                                                      ETL
 
 La primera tarea constó en realizar un proceso de ETL (Extract, Transform and Load) en donde llevé a cabo una limpieza de los datos crudos en la plataforma Visual Studio Code con lenguaje Python.
 Como primer paso, cargué y combiné ambos Dataset en un DataFrame de Pandas para tener todos los datos a disposición.
