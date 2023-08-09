@@ -14,6 +14,12 @@ Link al Deploy en RENDER: https://fedegravinahenryp1.onrender.com/docs
 Link al video presentación: https://clipchamp.com/watch/fEE2Dqeagwj
 
 
+
+Link al video presentación: https://drive.google.com/file/d/1umBMEmknle9Y5akipFthy2KH0Hs1lXhf/view?usp=sharing
+
+
+
+
 Este es el primer proyecto individual de la etapa de Labs en el Bootcamp de Henry. Este trabajo  nos sitúa en el rol de un MLOps Engineer
 
 Se nos proporciono dos datasets en formato csv (coma separated values) con información de películas que constaba de diferentes campos, como el año de estreno, actores, directores, presupuesto, entre otros.
