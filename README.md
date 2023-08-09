@@ -82,13 +82,34 @@ correlation_matrix = Films.corr()
 
 print(Films.describe())
 
-
-Realicé graficos de estas relaciones y obtuve indicios de que me interesaba concatenar luego para el proceso final que fue crear el sistema de recomendación de peliculas.
+Realicé gráficos de estas relaciones y obtuve indicios de que me interesaba concatenar luego para los pasos siguientes del proyecto. Debido a las consignas del proyecto, no fue necesario realiza un análisis a fondo, pero en otro tipo de trabajos, sería en este momento en donde me dedicaría a hacer una exploración a fondo de las variables, a realizar gráficos y verificar relaciones para sacar conclusiones y poder, a partir de estas, hacer un análsis de los datos y realizar un informe o seguir adelante y llevar a cabo un proceso de Machine Learning. Un ejemplo de estos es el siguiente:
 
 ![image](https://github.com/FedeGG09/PROYECTO-INDIVIDUAL-NUMERO1/assets/124220922/12bfe42e-e3d0-439c-afba-d8caf9f682ce)
 
 
+DESARROLLO DE LAS CONSULTAS A LA API:
 
+Desarrollado en Visual Studio Code y siguiendo las consignas otorgadas, procedí a desarrollar 6 funciones en Python para luego poder ser desplegadas en un repositorio nuevo de mi GitHub desde FastApi. Un ejemplo de estas consultas consistio en realizar función que se utiliza para consultar información sobre una franquicia de películas específica, incluido el número de películas, la ganancia total y la ganancia promedio de las películas en esa franquicia. 
+
+@app.get('/franquicia/')
+def franquicia(Franquicia: str):
+    franquicia_data = films[films['belongs_to_collection'] == Franquicia]
+    peliculas_count = franquicia_data.shape[0]
+    ganancia_total = franquicia_data['revenue'].sum()
+    ganancia_promedio = ganancia_total / peliculas_count
+    return f"La franquicia {Franquicia} posee {peliculas_count} peliculas, una ganancia total de {ganancia_total} y una ganancia promedio de {ganancia_promedio}"
+
+En este ejemplo defino la fución franquicia como cadena de caracteres y creo las variables franquicia_data(en donde cargo los datos pertinentes desde mi dataset ya limpio “films”)
+A continuación defino la variable “peliculas_count “ donde calculo el
+número de películas en la franquicia seleccionada contando la cantidad de filas en el DataFrame de la variable anterior.
+Creo una nueva variable llamada “ganancia_total” donde calculo la ganancia total de la franquicia seleccionada sumando los valores de la columna 'revenue' en el DataFrame "franquicia_data". 
+Finalmente utilizo “ganancia_promedio” dividiendo la ganancia total entre el número de películas en la franquicia.
+En la última línea de código le pido a la función que me devuelva una cadena formateada que contenga el: nombre de la franquicia, cantidad de películas, ganancia total y ganancia promedio.
+
+
+SISTEMA DE RECOMENDACIÓN DE PELÍCULAS
+
+En esta parte del proceso utilicé librerías de Machine Learning como scikit-learn para comparar, categorizar y relevar  
 
 
 
