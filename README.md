@@ -164,3 +164,9 @@ Aquí utilizo el código que explico a continuación para desarrollar mi Sistema
 8.	recommended_movies = Films['title'].iloc[similar_movies_indices].to_list(): Obtiene los nombres de las películas recomendadas utilizando los índices de las películas más similares y los busca en la columna 'title' del DataFrame Films. Los nombres se almacenan en la lista recommended_movies.
 
 9.	return recommended_movies: Devuelve la lista de nombres de películas recomendadas.
+
+
+Para terminar el proyecto subo las librerias que consumiran la api en el archivo requirements.txt y el código en el archivo main.py.
+El paso final consistió en desplegar el proyecto en la página Render.com a través de la clonación de este repositorio en dicha página.
+
+Muchas Gracias por la atención.
