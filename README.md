@@ -107,10 +107,60 @@ Finalmente utilizo “ganancia_promedio” dividiendo la ganancia total entre el
 En la última línea de código le pido a la función que me devuelva una cadena formateada que contenga el: nombre de la franquicia, cantidad de películas, ganancia total y ganancia promedio.
 
 
+DESARROLLO DE LAS CONSULTAS A LA API
+
+Desarrollado en Visual Studio Code y siguiendo las consignas otorgadas, procedí a desarrollar 6 funciones en Python para luego poder ser desplegadas en un repositorio nuevo de mi GitHub desde FastApi. Un ejemplo de estas consultas consistio en realizar función que se utiliza para consultar información sobre una franquicia de películas específica, incluido el número de películas, la ganancia total y la ganancia promedio de las películas en esa franquicia. 
+
+@app.get('/franquicia/')
+def franquicia(Franquicia: str):
+    franquicia_data = films[films['belongs_to_collection'] == Franquicia]
+    peliculas_count = franquicia_data.shape[0]
+    ganancia_total = franquicia_data['revenue'].sum()
+    ganancia_promedio = ganancia_total / peliculas_count
+    return f"La franquicia {Franquicia} posee {peliculas_count} peliculas, una ganancia total de {ganancia_total} y una ganancia promedio de {ganancia_promedio}"
+
+En este ejemplo defino la fución franquicia como cadena de caracteres y creo las variables franquicia_data(en donde cargo los datos pertinentes desde mi Dataset ya limpio “films”)
+A continuación defino la variable “peliculas_count “ donde calculo el
+número de películas en la franquicia seleccionada contando la cantidad de filas en el DataFrame de la variable anterior.
+Creo una nueva variable llamada “ganancia_total” donde calculo la ganancia total de la franquicia seleccionada sumando los valores de la columna 'revenue' en el DataFrame "franquicia_data". 
+Finalmente utilizo “ganancia_promedio” dividiendo la ganancia total entre el número de películas en la franquicia.
+En la última línea de código le pido a la función que me devuelva una cadena formateada que contenga el: nombre de la franquicia, cantidad de películas, ganancia total y ganancia promedio.
+
+
 SISTEMA DE RECOMENDACIÓN DE PELÍCULAS
 
-En esta parte del proceso utilicé librerías de Machine Learning como scikit-learn para comparar, categorizar y relevar  
+La parte final del proyecto consistió en realizar un proceso de Machine Learning para seleccionar una película y que me devuelva cinco películas similares.
+Con este objeto, empecé por importar las librerías que voy a utilizar de Pandas y  Scikit-learn. Cargué el DataFrame ya limpio, estandarice las columnas que me interesaban para entrecruzar y recomendar. 
+Utilice estos campos:
+
+Films['combined_features'] = (
+    Films['belongs_to_collection'].astype(str) + ' ' +
+    Films['genres'].astype(str) + ' ' +
+    Films['release_date'].astype(str) + ' ' +
+    Films['original_language'].astype(str)
+)
+
+A continuación cree una matriz de características TF-IDF. Aquí lo utilizo para calcular la similitud del coseno entre documentos de texto que han sido representados numéricamente mediante esta técnica. El resultado es una matriz de similitud del coseno que puede ser utilizada para encontrar documentos similares en función de sus características.
+Finalmente llamo a la librería fuzzywuzzy para conseguir que cuando el usuario escriba el titulo de una película, el programa acepte errores de tipeo.
+Finalmente creo la función “recomendación”. 
+Aquí utilizo el código que explico a continuación para desarrollar mi Sistema de Recomendación de Películas.
+
+1.	titulo = titulo.lower().strip(): Convierte el título ingresado a minúsculas y elimina los espacios en blanco al principio y al final.
+
+2.	match_scores = Films['title'].apply(lambda x: fuzz.partial_ratio(x.lower().strip(), titulo)): Utiliza la función fuzz.partial_ratio de la librería FuzzyWuzzy para calcular puntuaciones de similitud difusa entre el título ingresado y todos los títulos en la columna 'title' del DataFrame Films. Esta línea crea una serie de puntuaciones de similitud.
 
 
+3.	best_match_index = match_scores.idxmax(): Encuentra el índice de la película con la puntuación de similitud más alta en la serie de puntuaciones de similitud calculadas anteriormente.
+
+4.	index = best_match_index: Almacena el índice de la película más similar en la variable index.
 
 
+5.	sim_scores = list(enumerate(cosine_sim[index])): Obtiene la lista de puntuaciones de similitud del coseno entre la película seleccionada y todas las demás películas en la matriz de similitud cosine_sim.
+
+6.	sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True): Ordena las puntuaciones de similitud en orden descendente para obtener las películas más similares en primer lugar.
+
+
+7.	similar_movies_indices = [i[0] for i in sim_scores[1:6]]: Obtiene los índices de las 5 películas más similares (excluyendo la película consultada) de la lista ordenada de puntuaciones de similitud.
+8.	recommended_movies = Films['title'].iloc[similar_movies_indices].to_list(): Obtiene los nombres de las películas recomendadas utilizando los índices de las películas más similares y los busca en la columna 'title' del DataFrame Films. Los nombres se almacenan en la lista recommended_movies.
+
+9.	return recommended_movies: Devuelve la lista de nombres de películas recomendadas.
